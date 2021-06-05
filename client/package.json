@@ -1,0 +1,27 @@
+{
+  "name": "lark-designer",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "bulma": "^0.9.2",
+    "vue": "^3.0.11",
+    "vue-bulma": "github:gdereese/vue-bulma#master"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-eslint": "~5.0.0-beta.0",
+    "@vue/cli-service": "~5.0.0-beta.0",
+    "@vue/compiler-sfc": "^3.0.11",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "eslint": "^7.26.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-vue": "^7.9.0",
+    "node-sass": "^6.0.0",
+    "prettier": "^2.3.0",
+    "sass-loader": "^11.1.1"
+  }
+}
