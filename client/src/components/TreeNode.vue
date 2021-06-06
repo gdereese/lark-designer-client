@@ -1,6 +1,9 @@
 <template>
   <div class="tree-node">
-    <p class="tree-node-value">{{ value.value }}</p>
+    <p class="tree-node-value">
+      <Tag>{{ value.type }}</Tag>
+      {{ value.value }}
+    </p>
     <ul class="tree-node-list" v-if="value.nodes">
       <li :key="node" v-for="node in value.nodes">
         <TreeNode :value="node" />
@@ -10,8 +13,13 @@
 </template>
 
 <script>
+import { Tag } from "vue-bulma";
+
 export default {
   name: "TreeNode",
+  components: {
+    Tag,
+  },
   props: {
     value: Object,
   },
