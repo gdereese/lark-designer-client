@@ -1,8 +1,8 @@
 <template>
   <div class="tree-node">
     <p class="tree-node-value">
+      <span class="mr-3" v-if="value.value">{{ value.value }}</span>
       <Tag>{{ value.type }}</Tag>
-      {{ value.value }}
     </p>
     <ul class="tree-node-list" v-if="value.nodes">
       <li :key="node" v-for="node in value.nodes">
@@ -36,6 +36,7 @@ export default {
     padding-left: 1.5rem;
   }
   & .tree-node-value {
+    display: flex;
     padding-bottom: 0.25rem;
     padding-top: 0.25rem;
   }
