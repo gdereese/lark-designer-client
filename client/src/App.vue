@@ -1,97 +1,112 @@
 <template>
-  <div>
+  <div class="app">
     <NavigationBar color="primary">
       <template #brand>
         <span class="navbar-item">Lark Designer</span>
       </template>
     </NavigationBar>
 
-    <main class="section">
-      <Block>
-        <textarea
-          class="textarea grammar-edit"
-          placeholder="enter Lark grammar"
-          v-model="grammar.text"
-        ></textarea>
-      </Block>
+    <div id="app-content">
+      <div class="tabs">
+        <ul>
+          <li :class="{ 'is-active': selectedTab === 'develop' }">
+            <a @click="selectedTab = 'develop'">Develop</a>
+          </li>
+          <li :class="{ 'is-active': selectedTab === 'test' }">
+            <a @click="selectedTab = 'test'">Test</a>
+          </li>
+        </ul>
+      </div>
 
-      <Block>
-        <Button
-          :is-disabled="!canValidate || grammar.isValidating"
-          :is-loading="grammar.isValidating"
-          @click="validate"
-        >
-          Validate
-        </Button>
-        <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
-          <Icon>
-            <span class="las la-check"></span>
-          </Icon>
-          <span>Valid</span>
-        </span>
-        <span class="icon-text has-text-danger m-2" v-else-if="grammar.error">
-          <Icon>
-            <span class="las la-times"></span>
-          </Icon>
-          <span>Invalid</span>
-        </span>
-      </Block>
+      <div id="develop-tab-content" class="tab-content" v-if="selectedTab === 'develop'">
+        <Block class="develop-input-block">
+          <textarea
+            class="textarea is-family-monospace"
+            placeholder="enter Lark grammar"
+            v-model="grammar.text"
+          ></textarea>
+        </Block>
 
-      <Block v-if="grammar.error">
-        <Message color="danger">
-          <template #body>
-            <span v-html="grammar.error.message"></span>
-          </template>
-        </Message>
-      </Block>
+        <Block>
+          <Button
+            :is-disabled="!canValidate || grammar.isValidating"
+            :is-loading="grammar.isValidating"
+            @click="validate"
+          >
+            Validate
+          </Button>
+          <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
+            <Icon>
+              <span class="las la-check"></span>
+            </Icon>
+            <span>Valid</span>
+          </span>
+          <span class="icon-text has-text-danger m-2" v-else-if="grammar.error">
+            <Icon>
+              <span class="las la-times"></span>
+            </Icon>
+            <span>Invalid</span>
+          </span>
+        </Block>
 
-      <div class="columns">
-        <div class="column">
-          <Block>
-            <textarea
-              class="textarea input-edit"
-              placeholder="enter test input"
-              v-model.lazy="input.text"
-            ></textarea>
-          </Block>
+        <Block v-if="grammar.error">
+          <Message color="danger">
+            <template #body>
+              <span v-html="grammar.error.message"></span>
+            </template>
+          </Message>
+        </Block>
+      </div>
 
-          <Block>
-            <Button
-              :is-disabled="input.isParsing"
-              :is-loading="input.isParsing"
-              @click="parseInput"
-              >Parse</Button
-            >
-            <span class="icon-text has-text-success m-2" v-if="input.isValid">
-              <Icon>
-                <span class="las la-check"></span>
-              </Icon>
-              <span>Valid</span>
-            </span>
-            <span class="icon-text has-text-danger m-2" v-else-if="input.error">
-              <Icon>
-                <span class="las la-times"></span>
-              </Icon>
-              <span>Invalid</span>
-            </span>
-          </Block>
+      <div id="test-tab-content" class="tab-content" v-else-if="selectedTab === 'test'">
+        <div class="columns">
+          <div class="column">
+            <Block class="test-input-block">
+              <textarea
+                class="textarea is-family-monospace"
+                placeholder="enter test input"
+                v-model.lazy="input.text"
+              ></textarea>
+            </Block>
 
-          <Block v-if="input.error">
-            <Message color="danger">
-              <template #body>
-                <span v-html="input.error.message"></span>
-              </template>
-            </Message>
-          </Block>
-        </div>
+            <Block>
+              <Button
+                :is-disabled="input.isParsing"
+                :is-loading="input.isParsing"
+                @click="parseInput"
+                >Parse</Button
+              >
+              <span class="icon-text has-text-success m-2" v-if="input.isValid">
+                <Icon>
+                  <span class="las la-check"></span>
+                </Icon>
+                <span>Valid</span>
+              </span>
+              <span class="icon-text has-text-danger m-2" v-else-if="input.error">
+                <Icon>
+                  <span class="las la-times"></span>
+                </Icon>
+                <span>Invalid</span>
+              </span>
+            </Block>
 
-        <div class="column">
-          <Block v-if="output.ast">
-            <TreeNode :value="output.ast" />
-          </Block>
+            <Block v-if="input.error">
+              <Message color="danger">
+                <template #body>
+                  <span v-html="input.error.message"></span>
+                </template>
+              </Message>
+            </Block>
+          </div>
+
+          <div id="ast-column" class="column">
+            <Block v-if="output.ast">
+              <TreeNode :value="output.ast" />
+            </Block>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
@@ -119,48 +134,61 @@ export default {
         error: null,
         isValid: null,
         isValidating: false,
-        text: `start         : rulelist
-rulelist      : (rule | (c_wsp* c_nl))+
-rule          : rulename defined_as elements c_nl
-rulename      : ALPHA (ALPHA | DIGIT | "-" | "_")*
-defined_as    : c_wsp* ("=/" | "=" | ":=") c_wsp*
-elements      : alternation c_wsp*
-c_wsp         : (c_nl WSP) | WSP
-c_nl          : comment | NEWLINE
-comment       : ";" (WSP | VCHAR)* (CR | LF)
-alternation   : concatenation (c_wsp* ("/" | "|") c_wsp* concatenation)*
-concatenation : repetition (c_wsp* repetition)*
+        text: `start         : rule_list
+rule_list     : rule+
+
+rule          : rule_name defined_as elements comment? _NEWLINE
+rule_name     : IDENTIFIER
+defined_as    : OPERATOR
+elements      : alternation
+comment       : ";" VCHAR*
+
+alternation   : concatenation (("/" | "|") concatenation)*
+
+concatenation : repetition+
+
 repetition    : repeat? element
-repeat        : (DIGIT* "*" DIGIT*) | DIGIT+
-element       : group | rulename | option | char_val | num_val | prose_val
-group         : "(" c_wsp* alternation c_wsp* ")"
-option        : "[" c_wsp* alternation c_wsp* "]"
-char_val      : DQUOTE CHAR2* DQUOTE
-num_val       : "%" (bin_val | dec_val | hex_val)
-bin_val       : "b" BIT+ (("." BIT+)+ | "-" BIT+)*
-dec_val       : "d" DIGIT+ (("." DIGIT+)+ | "-" DIGIT+)*
-hex_val       : "x" HEXDIG+ (("." HEXDIG+)+ | "-" HEXDIG+)*
+repeat        : var_repeat | spec_repeat
+var_repeat    : min_rep_count? "*" max_rep_count?
+min_rep_count : INT
+max_rep_count : INT
+spec_repeat   : rep_count?
+rep_count     : INT
+
+group         : "(" alternation ")"
+
+option        : "[" alternation "]"
+
 prose_val     : "<" (comment | CHAR3)* ">"
+
+element       : group | IDENTIFIER | option | STRING | NUM_VAL | prose_val
+
+OPERATOR      : /=\\// | /=/ | /:=/
+IDENTIFIER    : ALPHA (ALPHA | DIGIT | /[-_]/)*
+STRING        : DQUOTE CHAR2* DQUOTE
+INT           : DIGIT+
+NUM_VAL       : "%" (BIN_VAL | DEC_VAL | HEX_VAL)
+BIN_VAL       : "b" BIT+ (("." BIT+)+ | "-" BIT+)*
+DEC_VAL       : "d" DIGIT+ (("." DIGIT+)+ | "-" DIGIT+)*
+HEX_VAL       : "x" HEXDIG+ (("." HEXDIG+)+ | "-" HEXDIG+)*
 
 ALPHA  : /[\\x41-\\x5a\\x61-\\x7a]/
 DIGIT  : /[\\x30-\\x39]/
 HEXDIG : DIGIT | /[A-Fa-f]/
 DQUOTE : /\\x22/
-SP     : /\\x20/
-HTAB   : /\\x09/
-WSP    : SP | HTAB
-LWSP   : (WSP | NEWLINE | WSP)*
 VCHAR  : /[\\x21-\\x7e]/
 CHAR   : /[\\x01-\\x7f]/
 CHAR2  : /[\\x20\\x21\\x23-\\x73]/
 CHAR3  : /[\\x0a\\x20-\\x3d\\x3f-\\x7e]/
 OCTET  : /[\\x00-\\xff]/
 CTL    : /[\\x00-\\x1f]|\\x7f/
-CR     : /\\x0d/
-LF     : /\\x0a/
 BIT    : /[01]/
 
-%import common.NEWLINE
+%import common.NEWLINE -> _NEWLINE
+%import common.WS
+
+%ignore _NEWLINE
+%ignore WS
 `,
       },
       input: {
@@ -191,6 +219,7 @@ zip-code         = 5DIGIT ["-" 4DIGIT]
       output: {
         ast: null,
       },
+      selectedTab: "develop",
     };
   },
   computed: {
@@ -237,15 +266,8 @@ zip-code         = 5DIGIT ["-" 4DIGIT]
 
         if (resBody.output) {
           this.output.ast = resBody.output.ast;
-        }
-
-        // TODO: make this a Vue filter
-        if (resBody.output.error) {
-          this.output.error = {
-            message: resBody.output.error.message.replaceAll("\n", "<br />"),
-          };
         } else {
-          this.output.error = null;
+          this.output.ast = null;
         }
       } finally {
         this.input.isParsing = false;
@@ -284,15 +306,21 @@ zip-code         = 5DIGIT ["-" 4DIGIT]
 </script>
 
 <style lang="scss">
+$family-monospace: "Fira Code", monospace;
+$green: rgb(34, 139, 34);
+
 @import "~bulma/bulma";
 
-.grammar-edit {
-  font-family: "Fira Code", monospace;
+.is-family-monospace {
   font-variant-ligatures: none;
 }
 
-.input-edit {
-  font-family: "Fira Code", monospace;
-  font-variant-ligatures: none;
+.tab-content {
+  padding: 0.75rem;
+}
+
+#ast-column {
+  max-height: calc(100vh - #{$navbar-height} - 2.5rem - 1.5rem - 1px);
+  overflow: auto;
 }
 </style>
