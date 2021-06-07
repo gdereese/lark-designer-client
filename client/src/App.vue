@@ -59,8 +59,8 @@
       </div>
 
       <div id="test-tab-content" class="tab-content" v-else-if="selectedTab === 'test'">
-        <div class="columns">
-          <div class="column">
+        <div class="test-columns">
+          <div class="test-column">
             <Block class="test-input-block">
               <textarea
                 class="textarea is-family-monospace"
@@ -69,7 +69,7 @@
               ></textarea>
             </Block>
 
-            <Block>
+            <Block class="test-button-block">
               <Button
                 :is-disabled="input.isParsing"
                 :is-loading="input.isParsing"
@@ -89,7 +89,9 @@
                 <span>Invalid</span>
               </span>
             </Block>
+          </div>
 
+          <div id="ast-column" class="test-column">
             <Block v-if="input.error">
               <Message color="danger">
                 <template #body>
@@ -97,9 +99,7 @@
                 </template>
               </Message>
             </Block>
-          </div>
 
-          <div id="ast-column" class="column">
             <Block v-if="output.ast">
               <TreeNode :value="output.ast" />
             </Block>
@@ -319,8 +319,42 @@ $green: rgb(34, 139, 34);
   padding: 0.75rem;
 }
 
+.test-columns {
+  display: flex;
+  flex-direction: row;
+
+  & .test-column {
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+
+    &:first-child {
+      display: flex;
+      flex-direction: column;
+      margin-right: 0.75rem;
+
+      & .test-input-block {
+        flex-grow: 1;
+
+        & textarea {
+          height: 100%;
+          max-height: 100%;
+        }
+      }
+
+      & .test-button-block {
+        flex-grow: 0;
+      }
+    }
+
+    &:last-child {
+      margin-left: 0.75rem;
+    }
+  }
+}
+
 #ast-column {
-  max-height: calc(100vh - #{$navbar-height} - 2.5rem - 1.5rem - 1px);
+  max-height: calc(100vh - #{$navbar-height} - 2.5rem - 1.5rem - 1.5rem - 1px);
   overflow: auto;
 }
 </style>
