@@ -29,48 +29,217 @@
       </div>
 
       <div class="tab-content develop-tab-content" v-if="selectedTab === 'develop'">
-        <Block class="develop-input-block">
-          <textarea
-            class="textarea is-family-monospace"
-            placeholder="enter Lark grammar"
-            v-model="grammar.text"
-          ></textarea>
-        </Block>
+        <div class="tab-columns">
+          <div class="tab-column">
+            <Block class="develop-input-block">
+              <textarea
+                class="textarea is-family-monospace"
+                placeholder="enter Lark grammar"
+                v-model="grammar.text"
+              ></textarea>
+            </Block>
 
-        <Block class="develop-button-block">
-          <Button
-            :is-disabled="!canValidate || grammar.isValidating"
-            :is-loading="grammar.isValidating"
-            @click="validate"
-          >
-            Validate
-          </Button>
-          <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
-            <Icon>
-              <span class="las la-check"></span>
-            </Icon>
-            <span>Valid</span>
-          </span>
-          <span class="icon-text has-text-danger m-2" v-else-if="grammar.error">
-            <Icon>
-              <span class="las la-times"></span>
-            </Icon>
-            <span>Invalid</span>
-          </span>
-        </Block>
+            <Block class="develop-button-block">
+              <Button
+                :is-disabled="!canValidate || grammar.isValidating"
+                :is-loading="grammar.isValidating"
+                @click="validate"
+              >
+                Validate
+              </Button>
+              <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
+                <Icon>
+                  <span class="las la-check"></span>
+                </Icon>
+                <span>Valid</span>
+              </span>
+              <span class="icon-text has-text-danger m-2" v-else-if="grammar.error">
+                <Icon>
+                  <span class="las la-times"></span>
+                </Icon>
+                <span>Invalid</span>
+              </span>
+            </Block>
 
-        <Block v-if="grammar.error">
-          <Message color="danger">
-            <template #body>
-              <span v-html="grammar.error.message"></span>
-            </template>
-          </Message>
-        </Block>
+            <Block v-if="grammar.error">
+              <Message color="danger">
+                <template #body>
+                  <span v-html="grammar.error.message"></span>
+                </template>
+              </Message>
+            </Block>
+          </div>
+
+          <div class="tab-column develop-ref-column">
+            <h3 class="title is-size-6">Grammar reference</h3>
+
+            <Block>
+              <a href="https://lark-parser.readthedocs.io/en/latest/grammar.html#" target="_blank">
+                <span class="icon-text">
+                  <Icon>
+                    <span class="las la-external-link-alt"></span>
+                  </Icon>
+                  <span>View documentation</span>
+                </span>
+              </a>
+            </Block>
+
+            <h4 class="is-size-7">Definitions</h4>
+            <table class="table is-fullwidth is-narrow">
+              <tbody>
+                <tr>
+                  <th>Rule (non-terminal)</th>
+                  <td>
+                    <code>&lt;name&gt;: &lt;non-term-exp&gt;</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Terminal</th>
+                  <td>
+                    <code>&lt;NAME&gt;: &lt;term-exp&gt;</code>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4 class="is-size-7">Terminal expressions</h4>
+            <table class="table is-fullwidth is-narrow">
+              <tbody>
+                <tr>
+                  <th>String literal</th>
+                  <td>
+                    <code>"string"</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Case-insensitive string literal</th>
+                  <td>
+                    <code>"string"i</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Regular expression</th>
+                  <td>
+                    <code>/regular expression/</code>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4 class="is-size-7">Non-terminal expressions</h4>
+            <table class="table is-fullwidth is-narrow">
+              <tbody>
+                <tr>
+                  <th>Rule reference</th>
+                  <td>
+                    <code>&lt;name&gt;</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Terminal reference</th>
+                  <td>
+                    <code>&lt;NAME&gt;</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Sequence group</th>
+                  <td>
+                    <code>(&lt;exp&gt; &lt;exp&gt; ...)</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Optional</th>
+                  <td>
+                    <code>[&lt;exp&gt; &lt;exp&gt; ...]</code>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4 class="is-size-7">Quantifiers</h4>
+            <table class="table is-fullwidth is-narrow">
+              <tbody>
+                <tr>
+                  <th>0 or 1</th>
+                  <td>
+                    <code>&lt;name | NAME&gt;?</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>0 or more</th>
+                  <td>
+                    <code>&lt;name | NAME&gt;*</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>1 or more</th>
+                  <td>
+                    <code>&lt;name | NAME&gt;+</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Exactly n</th>
+                  <td>
+                    <code>&lt;name | NAME&gt; ~ n</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Between n to m</th>
+                  <td>
+                    <code>&lt;name | NAME&gt; ~ n..m</code>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4 class="is-size-7">Directives</h4>
+            <table class="table is-fullwidth is-narrow">
+              <tbody>
+                <tr>
+                  <th>Ignore a terminal when parsing</th>
+                  <td>
+                    <code>%ignore &lt;NAME&gt;</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Import a definition from another grammar</th>
+                  <td>
+                    <code>%import &lt;module&gt;.&lt;name&gt;</code><br />
+                    <code>%import &lt;module&gt;.&lt;NAME&gt;</code><br />
+                    <code>%import &lt;module&gt;.&lt;name&gt; -> &lt;name&gt;</code><br />
+                    <code>%import &lt;module&gt;.&lt;NAME&gt; -> &lt;NAME&gt;</code><br />
+                    <code>%import &lt;module&gt; (&lt;name | NAME&gt;, &lt;name | NAME&gt; ...)</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Declare a terminal without defining it</th>
+                  <td>
+                    <code>%declare &lt;NAME&gt;</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Override a definition</th>
+                  <td>
+                    <code>%override &lt;name&gt;: &lt;non-term-exp&gt;</code><br />
+                    <code>%override &lt;NAME&gt;: &lt;term-exp&gt;</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Extend a definition</th>
+                  <td>
+                    <code>%extend &lt;name&gt;: &lt;non-term-exp&gt;</code><br />
+                    <code>%extend &lt;NAME&gt;: &lt;term-exp&gt;</code>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div class="tab-content test-tab-content" v-else-if="selectedTab === 'test'">
-        <div class="test-tab-columns">
-          <div class="test-tab-column test-input-column">
+        <div class="tab-columns">
+          <div class="tab-column test-input-column">
             <Block class="test-input-block">
               <textarea
                 class="textarea is-family-monospace"
@@ -109,7 +278,7 @@
             </Block>
           </div>
 
-          <div class="test-tab-column test-ast-column">
+          <div class="tab-column test-ast-column">
             <Block v-if="output.ast">
               <TreeNode :value="output.ast" />
             </Block>
@@ -339,27 +508,32 @@ $tab-content-padding: 0.75rem;
   }
 }
 
-.test-tab-columns {
+.tab-columns {
   display: flex;
   flex-direction: row;
-}
 
-.test-tab-column {
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 0;
+  & > .tab-column {
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 0;
 
-  &:not(:last-child) {
-    margin-right: 0.75rem;
-  }
+    &:not(:last-child) {
+      margin-right: 0.75rem;
+    }
 
-  &:not(:first-child) {
-    margin-left: 0.75rem;
-  }
+    &:not(:first-child) {
+      margin-left: 0.75rem;
+    }
 
-  &.test-ast-column {
-    max-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2));
-    overflow: auto;
+    &.test-ast-column {
+      max-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2));
+      overflow: auto;
+    }
+
+    &.develop-ref-column {
+      max-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2));
+      overflow: auto;
+    }
   }
 }
 
@@ -367,5 +541,13 @@ $tab-content-padding: 0.75rem;
   & textarea {
     height: 40vh;
   }
+}
+
+code {
+  font-variant-ligatures: none;
+}
+
+td {
+  width: 60%;
 }
 </style>
