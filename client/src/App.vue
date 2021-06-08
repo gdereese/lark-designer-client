@@ -6,19 +6,29 @@
       </template>
     </NavigationBar>
 
-    <div id="app-content">
+    <div class="app-content">
       <div class="tabs">
         <ul>
           <li :class="{ 'is-active': selectedTab === 'develop' }">
-            <a @click="selectedTab = 'develop'">Develop</a>
+            <a @click="selectedTab = 'develop'">
+              <Icon>
+                <span class="las la-pen"></span>
+              </Icon>
+              <span>Develop</span>
+            </a>
           </li>
           <li :class="{ 'is-active': selectedTab === 'test' }">
-            <a @click="selectedTab = 'test'">Test</a>
+            <a @click="selectedTab = 'test'">
+              <Icon>
+                <span class="las la-flask"></span>
+              </Icon>
+              <span>Test</span>
+            </a>
           </li>
         </ul>
       </div>
 
-      <div id="develop-tab-content" class="tab-content" v-if="selectedTab === 'develop'">
+      <div class="tab-content develop-tab-content" v-if="selectedTab === 'develop'">
         <Block class="develop-input-block">
           <textarea
             class="textarea is-family-monospace"
@@ -27,7 +37,7 @@
           ></textarea>
         </Block>
 
-        <Block>
+        <Block class="develop-button-block">
           <Button
             :is-disabled="!canValidate || grammar.isValidating"
             :is-loading="grammar.isValidating"
@@ -58,9 +68,9 @@
         </Block>
       </div>
 
-      <div id="test-tab-content" class="tab-content" v-else-if="selectedTab === 'test'">
-        <div class="test-columns">
-          <div class="test-column">
+      <div class="tab-content test-tab-content" v-else-if="selectedTab === 'test'">
+        <div class="test-tab-columns">
+          <div class="test-tab-column test-input-column">
             <Block class="test-input-block">
               <textarea
                 class="textarea is-family-monospace"
@@ -89,9 +99,7 @@
                 <span>Invalid</span>
               </span>
             </Block>
-          </div>
 
-          <div id="ast-column" class="test-column">
             <Block v-if="input.error">
               <Message color="danger">
                 <template #body>
@@ -99,7 +107,9 @@
                 </template>
               </Message>
             </Block>
+          </div>
 
+          <div class="test-tab-column test-ast-column">
             <Block v-if="output.ast">
               <TreeNode :value="output.ast" />
             </Block>
@@ -311,50 +321,51 @@ $green: rgb(34, 139, 34);
 
 @import "~bulma/bulma";
 
+$tab-height: calc(2.5rem + 1px);
+$tab-margin: 1.5rem;
+$tab-content-padding: 0.75rem;
+
 .is-family-monospace {
   font-variant-ligatures: none;
 }
 
 .tab-content {
-  padding: 0.75rem;
+  padding: $tab-content-padding;
 }
 
-.test-columns {
-  display: flex;
-  flex-direction: row;
-
-  & .test-column {
-    flex-basis: 0;
-    flex-grow: 1;
-    flex-shrink: 1;
-
-    &:first-child {
-      display: flex;
-      flex-direction: column;
-      margin-right: 0.75rem;
-
-      & .test-input-block {
-        flex-grow: 1;
-
-        & textarea {
-          height: 100%;
-          max-height: 100%;
-        }
-      }
-
-      & .test-button-block {
-        flex-grow: 0;
-      }
-    }
-
-    &:last-child {
-      margin-left: 0.75rem;
-    }
+.develop-input-block {
+  & textarea {
+    height: 40vh;
   }
 }
 
-#ast-column {
-  max-height: calc(100vh - #{$navbar-height} - 2.5rem - 1.5rem - 1.5rem - 1px);
-  overflow: auto;
+.test-tab-columns {
+  display: flex;
+  flex-direction: row;
+}
+
+.test-tab-column {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 0;
+
+  &:not(:last-child) {
+    margin-right: 0.75rem;
+  }
+
+  &:not(:first-child) {
+    margin-left: 0.75rem;
+  }
+
+  &.test-ast-column {
+    max-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2));
+    overflow: auto;
+  }
+}
+
+.test-input-block {
+  & textarea {
+    height: 40vh;
+  }
 }
 </style>
