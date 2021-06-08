@@ -28,10 +28,10 @@
         </ul>
       </div>
 
-      <div class="tab-content develop-tab-content" v-if="selectedTab === 'develop'">
+      <div class="tab-content" v-if="selectedTab === 'develop'">
         <div class="tab-columns">
           <div class="tab-column">
-            <Block class="develop-input-block">
+            <Block>
               <textarea
                 class="textarea is-family-monospace"
                 placeholder="enter Lark grammar"
@@ -39,7 +39,7 @@
               ></textarea>
             </Block>
 
-            <Block class="develop-button-block">
+            <Block>
               <Button
                 :is-disabled="!canValidate || grammar.isValidating"
                 :is-loading="grammar.isValidating"
@@ -70,7 +70,7 @@
             </Block>
           </div>
 
-          <div class="tab-column develop-ref-column">
+          <div class="tab-column scrollable-column">
             <h3 class="title is-size-6">Grammar reference</h3>
 
             <Block>
@@ -237,10 +237,10 @@
         </div>
       </div>
 
-      <div class="tab-content test-tab-content" v-else-if="selectedTab === 'test'">
+      <div class="tab-content" v-else-if="selectedTab === 'test'">
         <div class="tab-columns">
-          <div class="tab-column test-input-column">
-            <Block class="test-input-block">
+          <div class="tab-column">
+            <Block>
               <textarea
                 class="textarea is-family-monospace"
                 placeholder="enter test input"
@@ -248,7 +248,7 @@
               ></textarea>
             </Block>
 
-            <Block class="test-button-block">
+            <Block>
               <Button
                 :is-disabled="input.isParsing"
                 :is-loading="input.isParsing"
@@ -278,7 +278,7 @@
             </Block>
           </div>
 
-          <div class="tab-column test-ast-column">
+          <div class="tab-column scrollable-column">
             <Block v-if="output.ast">
               <TreeNode :value="output.ast" />
             </Block>
@@ -485,27 +485,27 @@ zip-code         = 5DIGIT ["-" 4DIGIT]
 </script>
 
 <style lang="scss">
+// Bulma variable overrides
 $family-monospace: "Fira Code", monospace;
 $green: rgb(34, 139, 34);
 
 @import "~bulma/bulma";
 
+// new variables
 $tab-height: calc(2.5rem + 1px);
 $tab-margin: 1.5rem;
 $tab-content-padding: 0.75rem;
+$tab-column-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2));
 
+// Bulma style overrides
 .is-family-monospace {
   font-variant-ligatures: none;
 }
 
-.tab-content {
-  padding: $tab-content-padding;
-}
-
-.develop-input-block {
-  & textarea {
-    height: 40vh;
-  }
+// custom styles
+.scrollable-column {
+  max-height: $tab-column-height;
+  overflow: auto;
 }
 
 .tab-columns {
@@ -518,29 +518,21 @@ $tab-content-padding: 0.75rem;
     flex-shrink: 0;
 
     &:not(:last-child) {
-      margin-right: 0.75rem;
+      margin-right: calc(#{$block-spacing} / 2);
     }
 
     &:not(:first-child) {
-      margin-left: 0.75rem;
-    }
-
-    &.test-ast-column {
-      max-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2));
-      overflow: auto;
-    }
-
-    &.develop-ref-column {
-      max-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2));
-      overflow: auto;
+      margin-left: calc(#{$block-spacing} / 2);
     }
   }
 }
 
-.test-input-block {
-  & textarea {
-    height: 40vh;
-  }
+.tab-content {
+  padding: $tab-content-padding;
+}
+
+.textarea {
+  height: 40vh;
 }
 
 code {

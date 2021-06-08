@@ -1,8 +1,8 @@
 <template>
   <div class="tree-node">
     <p class="tree-node-value">
-      <span class="mr-3" v-if="value.value">{{ value.value }}</span>
-      <Tag>{{ value.type }}</Tag>
+      <span class="is-family-monospace mr-3" v-if="value.value">{{ value.value }}</span>
+      <Tag :class="getTagClass(value)">{{ value.type }}</Tag>
     </p>
     <ul class="tree-node-list" v-if="value.nodes">
       <li :key="node" v-for="node in value.nodes">
@@ -23,10 +23,21 @@ export default {
   props: {
     value: Object,
   },
+  methods: {
+    getTagClass(node) {
+      if (node.value) {
+        return "term-tag";
+      } else {
+        return "non-term-tag";
+      }
+    },
+  },
 };
 </script>
 
 <style lang="scss">
+@import "~bulma/sass/helpers/color";
+
 .tree-node {
   & .tree-node-list {
     border-left: 2px solid #ccc;
@@ -35,10 +46,19 @@ export default {
     margin-top: 0.25rem;
     padding-left: 1.5rem;
   }
+
   & .tree-node-value {
     display: flex;
     padding-bottom: 0.25rem;
     padding-top: 0.25rem;
+
+    & .term-tag {
+      background-color: $blue;
+      color: $light;
+    }
+
+    & .non-term-tag {
+    }
   }
 }
 </style>
