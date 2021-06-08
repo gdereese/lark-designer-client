@@ -9,8 +9,8 @@
           <span class="las la-plus"></span>
         </Icon>
       </button>
+      <Tag size="medium" class="is-family-monospace" :class="getTagClass(value)">{{ value.type }}</Tag>
       <span class="is-family-monospace mr-3" v-if="value.value">{{ value.value }}</span>
-      <Tag :class="getTagClass(value)">{{ value.type }}</Tag>
     </p>
     <ul class="tree-node-list" v-if="value.nodes" v-show="isExpanded(value)">
       <li :key="node" v-for="node in value.nodes">
@@ -66,7 +66,7 @@ export default {
 .tree-node {
   & .tree-node-list {
     border-left: 2px solid #ccc;
-    margin-left: 0.75rem;
+    margin-left: calc(0.75rem + 1px);
     margin-bottom: 0.25rem;
     margin-top: 0.25rem;
     padding-left: 1.5rem;
@@ -78,9 +78,15 @@ export default {
     padding-bottom: 0.25rem;
     padding-top: 0.25rem;
 
+    & button {
+      margin-right: 0.5rem;
+    }
+
     & .term-tag {
       background-color: $blue;
       color: $light;
+      margin-left: 2.25rem;
+      margin-right: 0.75rem;
     }
 
     & .non-term-tag {
