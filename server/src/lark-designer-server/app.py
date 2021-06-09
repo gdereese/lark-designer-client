@@ -2,112 +2,35 @@ import flask
 import flask_cors
 import lark
 
+import transformer
+
 
 app = flask.Flask(__name__)
 cors = flask_cors.CORS(app)
-
-class NodeTransformer(lark.visitors.Transformer):
-    def __default__(self, data, children, meta):
-        return {
-            "value": None,
-            "type": data,
-            "location": None,
-            "nodes": children
-        }
-
-    def __default_token__(self, token):
-        return {
-            "value": token.value,
-            "type": token.type,
-            "location": {
-                "start": {
-                    "line": token.line,
-                    "column": token.column,
-                    "index": token.pos_in_stream
-                },
-                "end": {
-                    "line": token.end_line,
-                    "column": token.end_column,
-                    "index": token.end_pos
-                }
-            },
-            "nodes": None
-        }
 
 @app.route("/validate", methods=["POST"])
 def validate():
     req = flask.request.get_json()
 
-    try:
-        parser = lark.Lark(req["grammar"], 
-            #"cache": True,
-        )
+    _, parse_res = _parse_grammar(req["grammar"])
 
-        return {
-            "grammar": {
-                "is_valid": True,
-                "error": None
-            }
-        }
-    except lark.GrammarError as grammar_err:
-        return {
-            "grammar": {
-                "is_valid": False,
-                "error": {
-                    "message": str(grammar_err)
-                }
-            }
-        }
-    except lark.exceptions.UnexpectedToken as token_err:
-        return {
-            "grammar": {
-                "is_valid": False,
-                "error": {
-                    "message": str(token_err)
-                }
-            }
-        }
+    return {
+        "grammar": parse_res
+    }
+
 
 @app.route("/parse", methods=["POST"])
 def parse():
     req = flask.request.get_json()
 
-    try:
-        parser = lark.Lark(req["grammar"], 
-            #"cache": True,
-            propagate_positions=True,
-        )
-    except lark.GrammarError as grammar_err:
-        return {
-            "grammar": {
-                "is_valid": False,
-                "error": {
-                    "message": str(grammar_err)
-                }
-            },
-            "input": None,
-            "output": None
-        }
-    except lark.exceptions.UnexpectedToken as token_err:
-        return {
-            "grammar": {
-                "is_valid": False,
-                "error": {
-                    "message": str(token_err)
-                }
-            },
-            "input": None,
-            "output": None
-        }
+    parser, parse_res = _parse_grammar(req["grammar"])
 
     try:
-        ast = NodeTransformer().transform(parser.parse(req["input"]))
+        trans = transformer.NodeTransformer()
+        ast = trans.transform(parser.parse(req["input"]))
 
         return {
-            "grammar": {
-                "is_valid": True,
-                "error": None,
-            },
+            "grammar": parse_res,
             "input": {
                 "is_valid": True,
                 "error": None
@@ -118,10 +41,7 @@ def parse():
         }
     except lark.exceptions.UnexpectedEOF as eof_err:
         return {
-            "grammar": {
-                "is_valid": True,
-                "error": None
-            },
+            "grammar": parse_res,
             "input": {
                 "is_valid": False,
                 "error": {
@@ -134,10 +54,7 @@ def parse():
         }
     except lark.exceptions.UnexpectedCharacters as char_err:
         return {
-            "grammar": {
-                "is_valid": True,
-                "error": None
-            },
+            "grammar": parse_res,
             "input": {
                 "is_valid": False,
                 "error": {
@@ -148,3 +65,29 @@ def parse():
             },
             "output": None
         }
+
+def _parse_grammar(grammar):
+    try:
+        parser = lark.Lark(grammar, 
+            #cache=True,
+            propagate_positions=True
+        )
+
+        return (parser, {
+            "is_valid": True,
+            "error": None
+        })
+    except lark.GrammarError as grammar_err:
+        return (None, {
+            "is_valid": False,
+            "error": {
+                "message": str(grammar_err)
+            }
+        })
+    except lark.exceptions.UnexpectedToken as token_err:
+        return (None, {
+            "is_valid": False,
+            "error": {
+                "message": str(token_err)
+            }
+        })

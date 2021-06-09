@@ -7,8 +7,8 @@ authors = ["Gary DeReese <garydereese@sbcglobal.net>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 Flask = "^2.0.1"
-lark = "^0.11.3"
 Flask-Cors = "^3.0.10"
+lark = "^0.11.3"
 
 [tool.poetry.dev-dependencies]
 
