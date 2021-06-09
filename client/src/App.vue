@@ -2,7 +2,14 @@
   <div class="app">
     <NavigationBar color="primary">
       <template #brand>
-        <span class="navbar-item">Lark Designer</span>
+        <span class="navbar-item">
+          <span class="icon-text is-size-4 has-text-weight-bold">
+            <Icon>
+              <span class="las la-crow"></span>
+            </Icon>
+            <span>Lark Designer</span>
+          </span>
+        </span>
       </template>
     </NavigationBar>
 
