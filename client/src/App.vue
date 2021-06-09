@@ -5,7 +5,7 @@
         <span class="navbar-item">
           <span class="icon-text is-size-4 has-text-weight-bold">
             <Icon>
-              <span class="las la-crow"></span>
+              <LineAwesomeIcon name="crow" />
             </Icon>
             <span>Lark Designer</span>
           </span>
@@ -14,26 +14,20 @@
     </NavigationBar>
 
     <div class="app-content">
-      <div class="tabs">
-        <ul>
-          <li :class="{ 'is-active': selectedTab === 'develop' }">
-            <a @click="selectedTab = 'develop'">
-              <Icon>
-                <span class="las la-pen"></span>
-              </Icon>
-              <span>Develop</span>
-            </a>
-          </li>
-          <li :class="{ 'is-active': selectedTab === 'test' }">
-            <a @click="selectedTab = 'test'">
-              <Icon>
-                <span class="las la-flask"></span>
-              </Icon>
-              <span>Test</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <Tabs>
+        <Tab @click="selectedTab = 'develop'">
+          <Icon>
+            <LineAwesomeIcon name="pen" />
+          </Icon>
+          <span>Develop</span>
+        </Tab>
+        <Tab @click="selectedTab = 'test'">
+          <Icon>
+            <LineAwesomeIcon name="flask" />
+          </Icon>
+          <span>Test</span>
+        </Tab>
+      </Tabs>
 
       <div class="tab-content" v-if="selectedTab === 'develop'">
         <div class="tab-columns">
@@ -56,13 +50,13 @@
               </Button>
               <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
                 <Icon>
-                  <span class="las la-check"></span>
+                  <LineAwesomeIcon name="check" />
                 </Icon>
                 <span>Valid</span>
               </span>
               <span class="icon-text has-text-danger m-2" v-else-if="grammar.error">
                 <Icon>
-                  <span class="las la-times"></span>
+                  <LineAwesomeIcon name="times" />
                 </Icon>
                 <span>Invalid</span>
               </span>
@@ -86,7 +80,7 @@
                   <span class="icon-text">
                     <span>Documentation</span>
                     <Icon>
-                      <span class="las la-external-link-alt"></span>
+                      <LineAwesomeIcon name="external-link-alt" />
                     </Icon>
                   </span>
                 </a>
@@ -266,13 +260,13 @@
               >
               <span class="icon-text has-text-success m-2" v-if="input.isValid">
                 <Icon>
-                  <span class="las la-check"></span>
+                  <LineAwesomeIcon name="check" />
                 </Icon>
                 <span>Valid</span>
               </span>
               <span class="icon-text has-text-danger m-2" v-else-if="input.error">
                 <Icon>
-                  <span class="las la-times"></span>
+                  <LineAwesomeIcon name="times" />
                 </Icon>
                 <span>Invalid</span>
               </span>
@@ -296,7 +290,7 @@
                   <span class="icon-text">
                     <span>Documentation</span>
                     <Icon>
-                      <span class="las la-external-link-alt"></span>
+                      <LineAwesomeIcon name="external-link-alt" />
                     </Icon>
                   </span>
                 </a>
@@ -322,6 +316,9 @@ import { Button } from "vue-bulma";
 import { Icon } from "vue-bulma";
 import { Message } from "vue-bulma";
 import { NavigationBar } from "vue-bulma";
+import { Tab } from "vue-bulma";
+import { Tabs } from "vue-bulma";
+import LineAwesomeIcon from "./components/LineAwesomeIcon.vue";
 import TreeNode from "./components/TreeNode";
 
 export default {
@@ -330,8 +327,11 @@ export default {
     Block,
     Button,
     Icon,
+    LineAwesomeIcon,
     Message,
     NavigationBar,
+    Tab,
+    Tabs,
     TreeNode,
   },
   data() {

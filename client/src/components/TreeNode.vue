@@ -3,10 +3,10 @@
     <p class="tree-node-value">
       <button class="button is-small is-white" v-if="value.nodes" @click="toggleExpanded(value)">
         <Icon v-if="isExpanded(value)">
-          <span class="las la-minus"></span>
+          <LineAwesomeIcon name="minus" />
         </Icon>
         <Icon v-else>
-          <span class="las la-plus"></span>
+          <LineAwesomeIcon name="plus" />
         </Icon>
       </button>
       <Tag size="medium" class="is-family-monospace" :class="getTagClass(value)">{{ value.type }}</Tag>
@@ -23,11 +23,13 @@
 <script>
 import { Icon } from "vue-bulma";
 import { Tag } from "vue-bulma";
+import LineAwesomeIcon from "./LineAwesomeIcon";
 
 export default {
   name: "TreeNode",
   components: {
     Icon,
+    LineAwesomeIcon,
     Tag,
   },
   props: {
