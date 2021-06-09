@@ -15,13 +15,13 @@
 
     <div class="app-content">
       <Tabs>
-        <Tab @click="selectedTab = 'develop'">
+        <Tab :is-active="selectedTab === 'develop'" @click="selectedTab = 'develop'">
           <Icon>
             <LineAwesomeIcon name="pen" />
           </Icon>
           <span>Develop</span>
         </Tab>
-        <Tab @click="selectedTab = 'test'">
+        <Tab :is-active="selectedTab === 'test'" @click="selectedTab = 'test'">
           <Icon>
             <LineAwesomeIcon name="flask" />
           </Icon>
