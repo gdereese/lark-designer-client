@@ -11,6 +11,7 @@ class NodeTransformer(lark.visitors.Transformer):
         return {
             "value": None,
             "type": data,
+            "location": None,
             "nodes": children
         }
 
@@ -18,6 +19,18 @@ class NodeTransformer(lark.visitors.Transformer):
         return {
             "value": token.value,
             "type": token.type,
+            "location": {
+                "start": {
+                    "line": token.line,
+                    "column": token.column,
+                    "index": token.pos_in_stream
+                },
+                "end": {
+                    "line": token.end_line,
+                    "column": token.end_column,
+                    "index": token.end_pos
+                }
+            },
             "nodes": None
         }
 
@@ -62,6 +75,7 @@ def parse():
     try:
         parser = lark.Lark(req["grammar"], 
             #"cache": True,
+            propagate_positions=True,
         )
     except lark.GrammarError as grammar_err:
         return {
