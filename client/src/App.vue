@@ -71,17 +71,19 @@
           </div>
 
           <div class="tab-column scrollable-column">
-            <h3 class="title is-size-6">Grammar reference</h3>
-
             <Block>
-              <a href="https://lark-parser.readthedocs.io/en/latest/grammar.html#" target="_blank">
-                <span class="icon-text">
-                  <Icon>
-                    <span class="las la-external-link-alt"></span>
-                  </Icon>
-                  <span>View documentation</span>
-                </span>
-              </a>
+              <div class="column-header">
+                <h3 class="is-size-5">Grammar reference</h3>
+
+                <a href="https://lark-parser.readthedocs.io/en/latest/grammar.html" target="_blank">
+                  <span class="icon-text">
+                    <span>Documentation</span>
+                    <Icon>
+                      <span class="las la-external-link-alt"></span>
+                    </Icon>
+                  </span>
+                </a>
+              </div>
             </Block>
 
             <h4 class="is-size-7">Definitions</h4>
@@ -279,8 +281,26 @@
           </div>
 
           <div class="tab-column scrollable-column">
-            <Block v-if="output.ast">
-              <TreeNode :value="output.ast" />
+            <Block>
+              <div class="column-header">
+                <h3 class="is-size-5">Output tree</h3>
+
+                <a href="https://lark-parser.readthedocs.io/en/latest/tree_construction.html" target="_blank">
+                  <span class="icon-text">
+                    <span>Documentation</span>
+                    <Icon>
+                      <span class="las la-external-link-alt"></span>
+                    </Icon>
+                  </span>
+                </a>
+              </div>
+            </Block>
+
+            <Block>
+              <TreeNode v-if="output.ast" :value="output.ast" />
+              <div class="has-text-centered has-background-light has-text-grey p-6" v-else>
+                Click <span class="has-text-weight-semibold">Parse</span> to process the input with the current grammar and view the output tree.
+              </div>
             </Block>
           </div>
         </div>
@@ -503,6 +523,13 @@ $tab-column-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-mar
 }
 
 // custom styles
+.column-header {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .scrollable-column {
   max-height: $tab-column-height;
   overflow: auto;
