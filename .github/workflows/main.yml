@@ -36,13 +36,8 @@ jobs:
       - name: Install package
         working-directory: server
         run: poetry install
-        
-      - name: Install Heroku CLI
-        run: curl https://cli-assets.heroku.com/install.sh | sh
 
       - name: Push to Heroku Git
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: | 
-          heroku git:remote -a lark-designer-server-staging
+          git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/lark-designer-server-staging.git
           git push heroku master
