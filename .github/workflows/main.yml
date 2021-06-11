@@ -40,4 +40,4 @@ jobs:
       - name: Push to Heroku Git
         run: | 
           git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/lark-designer-server-staging.git
-          git push heroku master -f
+          git push heroku HEAD:master -f
