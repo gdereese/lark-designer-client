@@ -46,27 +46,3 @@ npm run lint
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
-## Server
-
-The user interface communicates with a server application for performing grammar validation and parsing of user input. It is implemented using:
-
-* [Python 3](https://www.python.org/)
-* [Flask](https://flask.palletsprojects.com/en/2.0.x/) - web application framework
-* [Lark](https://lark-parser.readthedocs.io/en/latest/) - grammar toolkit
-
-Source code is located in the `server` directory of this repo.
-
-### Project setup
-
-```shell
-poetry install
-```
-
-### Compiles and hot-reloads for development
-
-```shell
-poetry run flask 
-```
-
-You can also invoke this command from Visual Studio Code by running the `Python: Flask` task configured in the workspace's `launch.json` file.
