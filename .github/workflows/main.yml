@@ -34,6 +34,7 @@ jobs:
         run: pip install poetry
         
       - name: Install package
+        working-directory: server
         run: poetry install
         
       - name: Install Heroku CLI
