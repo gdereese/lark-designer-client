@@ -38,6 +38,10 @@ jobs:
       - name: Install package
         working-directory: server
         run: poetry install
+        
+      - name: Export requirements.txt
+        working-directory: server
+        run: poetry export --without-hashes > requirements.txt
 
       - name: Push to Heroku Git
         run: | 
