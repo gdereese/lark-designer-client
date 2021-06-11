@@ -5,7 +5,7 @@ description = ""
 authors = ["Gary DeReese <garydereese@sbcglobal.net>"]
 
 [tool.poetry.dependencies]
-python = "^3.8.7"
+python = "3.8.7"
 Flask = "^2.0.1"
 lark = "^0.11.3"
 
