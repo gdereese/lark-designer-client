@@ -41,6 +41,8 @@ jobs:
         run: curl https://cli-assets.heroku.com/install.sh | sh
 
       - name: Push to Heroku Git
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: | 
           heroku git:remote -a lark-designer-server-staging
           git push heroku master
