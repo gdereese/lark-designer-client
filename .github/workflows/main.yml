@@ -24,6 +24,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       
       - name: Setup Python
         uses: actions/setup-python@v2.2.2
@@ -40,4 +42,4 @@ jobs:
       - name: Push to Heroku Git
         run: | 
           git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/lark-designer-server-staging.git
-          git push heroku HEAD:master -f
+          git push heroku master
