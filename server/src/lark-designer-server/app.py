@@ -1,12 +1,10 @@
 import flask
-import flask_cors
 import lark
 
 import transformer
 
 
 app = flask.Flask(__name__)
-cors = flask_cors.CORS(app)
 
 @app.route("/validate", methods=["POST"])
 def validate():

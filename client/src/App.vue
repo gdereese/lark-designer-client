@@ -438,7 +438,7 @@ zip-code         = 5DIGIT ["-" 4DIGIT]
       try {
         this.input.isParsing = true;
 
-        const res = await fetch("http://localhost:5000/parse", {
+        const res = await fetch("/api/parse", {
           body: JSON.stringify({
             grammar: this.grammar.text,
             input: this.input.text || "",
@@ -483,7 +483,7 @@ zip-code         = 5DIGIT ["-" 4DIGIT]
       try {
         this.grammar.isValidating = true;
 
-        const res = await fetch("http://localhost:5000/validate", {
+        const res = await fetch("api/validate", {
           body: JSON.stringify({
             grammar: this.grammar.text,
           }),
