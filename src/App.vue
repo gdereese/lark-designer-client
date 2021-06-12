@@ -41,25 +41,36 @@
             </Block>
 
             <Block>
-              <Button
-                :is-disabled="!canValidate || grammar.isValidating"
-                :is-loading="grammar.isValidating"
-                @click="validate"
-              >
-                Validate
-              </Button>
-              <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
-                <Icon>
-                  <LineAwesomeIcon name="check" />
-                </Icon>
-                <span>Valid</span>
-              </span>
-              <span class="icon-text has-text-danger m-2" v-else-if="grammar.error">
-                <Icon>
-                  <LineAwesomeIcon name="times" />
-                </Icon>
-                <span>Invalid</span>
-              </span>
+              <Buttons>
+                <input
+                  id="grammar-file-input"
+                  type="file"
+                  accept=".lark"
+                  @change="loadGrammar"
+                />
+                <Button @click="promptGrammarFile">Load…</Button>
+                <Button
+                  :is-disabled="!canValidate || grammar.isValidating"
+                  :is-loading="grammar.isValidating"
+                  @click="validate"
+                >
+                  Validate
+                </Button>
+                <div class="mr-2 mb-2">
+                  <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
+                    <Icon>
+                      <LineAwesomeIcon name="check" />
+                    </Icon>
+                    <span>Valid</span>
+                  </span>
+                  <span class="icon-text has-text-danger m-2" v-else-if="grammar.error">
+                    <Icon>
+                      <LineAwesomeIcon name="times" />
+                    </Icon>
+                    <span>Invalid</span>
+                  </span>
+                </div>
+              </Buttons>
             </Block>
 
             <Block v-if="grammar.error">
@@ -252,24 +263,28 @@
             </Block>
 
             <Block>
-              <Button
-                :is-disabled="input.isParsing"
-                :is-loading="input.isParsing"
-                @click="parseInput"
-                >Parse</Button
-              >
-              <span class="icon-text has-text-success m-2" v-if="input.isValid">
-                <Icon>
-                  <LineAwesomeIcon name="check" />
-                </Icon>
-                <span>Valid</span>
-              </span>
-              <span class="icon-text has-text-danger m-2" v-else-if="input.error">
-                <Icon>
-                  <LineAwesomeIcon name="times" />
-                </Icon>
-                <span>Invalid</span>
-              </span>
+              <Buttons>
+                <Button
+                  :is-disabled="input.isParsing"
+                  :is-loading="input.isParsing"
+                  @click="parseInput"
+                  >Parse</Button
+                >
+                <div class="mr-2 mb-2">
+                  <span class="icon-text has-text-success m-2" v-if="input.isValid">
+                    <Icon>
+                      <LineAwesomeIcon name="check" />
+                    </Icon>
+                    <span>Valid</span>
+                  </span>
+                  <span class="icon-text has-text-danger m-2" v-else-if="input.error">
+                    <Icon>
+                      <LineAwesomeIcon name="times" />
+                    </Icon>
+                    <span>Invalid</span>
+                  </span>
+                </div>
+              </Buttons>
             </Block>
 
             <Block v-if="input.error">
@@ -313,6 +328,7 @@
 <script>
 import { Block } from "vue-bulma";
 import { Button } from "vue-bulma";
+import { Buttons } from "vue-bulma";
 import { Icon } from "vue-bulma";
 import { Message } from "vue-bulma";
 import { NavigationBar } from "vue-bulma";
@@ -326,6 +342,7 @@ export default {
   components: {
     Block,
     Button,
+    Buttons,
     Icon,
     LineAwesomeIcon,
     Message,
@@ -340,62 +357,7 @@ export default {
         error: null,
         isValid: null,
         isValidating: false,
-        text: `start         : rule_list
-rule_list     : rule+
-
-rule          : rule_name defined_as elements comment? _NEWLINE
-rule_name     : IDENTIFIER
-defined_as    : OPERATOR
-elements      : alternation
-comment       : ";" VCHAR*
-
-alternation   : concatenation (("/" | "|") concatenation)*
-
-concatenation : repetition+
-
-repetition    : repeat? element
-repeat        : var_repeat | spec_repeat
-var_repeat    : min_rep_count? "*" max_rep_count?
-min_rep_count : INT
-max_rep_count : INT
-spec_repeat   : rep_count?
-rep_count     : INT
-
-group         : "(" alternation ")"
-
-option        : "[" alternation "]"
-
-prose_val     : "<" (comment | CHAR3)* ">"
-
-element       : group | IDENTIFIER | option | STRING | NUM_VAL | prose_val
-
-OPERATOR      : /=\\// | /=/ | /:=/
-IDENTIFIER    : ALPHA (ALPHA | DIGIT | /[-_]/)*
-STRING        : DQUOTE CHAR2* DQUOTE
-INT           : DIGIT+
-NUM_VAL       : "%" (BIN_VAL | DEC_VAL | HEX_VAL)
-BIN_VAL       : "b" BIT+ (("." BIT+)+ | "-" BIT+)*
-DEC_VAL       : "d" DIGIT+ (("." DIGIT+)+ | "-" DIGIT+)*
-HEX_VAL       : "x" HEXDIG+ (("." HEXDIG+)+ | "-" HEXDIG+)*
-
-ALPHA  : /[\\x41-\\x5a\\x61-\\x7a]/
-DIGIT  : /[\\x30-\\x39]/
-HEXDIG : DIGIT | /[A-Fa-f]/
-DQUOTE : /\\x22/
-VCHAR  : /[\\x21-\\x7e]/
-CHAR   : /[\\x01-\\x7f]/
-CHAR2  : /[\\x20\\x21\\x23-\\x73]/
-CHAR3  : /[\\x0a\\x20-\\x3d\\x3f-\\x7e]/
-OCTET  : /[\\x00-\\xff]/
-CTL    : /[\\x00-\\x1f]|\\x7f/
-BIT    : /[01]/
-
-%import common.NEWLINE -> _NEWLINE
-%import common.WS
-
-%ignore _NEWLINE
-%ignore WS
-`,
+        text: null,
       },
       input: {
         error: null,
@@ -434,6 +396,14 @@ zip-code         = 5DIGIT ["-" 4DIGIT]
     },
   },
   methods: {
+    loadGrammar(evt) {
+      const file = evt.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.grammar.text = e.target.result;
+      };
+      reader.readAsText(file, "UTF-8");
+    },
     async parseInput() {
       try {
         this.input.isParsing = true;
@@ -478,6 +448,10 @@ zip-code         = 5DIGIT ["-" 4DIGIT]
       } finally {
         this.input.isParsing = false;
       }
+    },
+    promptGrammarFile() {
+      const fileInput = document.getElementById("grammar-file-input");
+      fileInput.click();
     },
     async validate() {
       try {
@@ -575,5 +549,9 @@ code {
 
 td {
   width: 60%;
+}
+
+#grammar-file-input {
+  display: none;
 }
 </style>
