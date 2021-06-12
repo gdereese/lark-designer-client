@@ -265,7 +265,7 @@
             <Block>
               <Buttons>
                 <Button
-                  :is-disabled="input.isParsing"
+                  :is-disabled="!canParse || grammar.isParsing"
                   :is-loading="input.isParsing"
                   @click="parseInput"
                   >Parse</Button
@@ -371,6 +371,9 @@ export default {
     };
   },
   computed: {
+    canParse() {
+      return this.canValidate;
+    },
     canValidate() {
       return (this.grammar.text || "") !== "";
     },
