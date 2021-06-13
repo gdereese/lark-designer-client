@@ -11,6 +11,11 @@
           </span>
         </span>
       </template>
+      <template #menu-end>
+        <span class="navbar-item">
+          {{ `Version ${version}` }}
+        </span>
+      </template>
     </NavigationBar>
 
     <div class="app-content">
@@ -368,6 +373,7 @@ export default {
         ast: null,
       },
       selectedTab: "develop",
+      version: process.env.VUE_APP_VERSION,
     };
   },
   computed: {
