@@ -87,171 +87,170 @@
             </Block>
           </div>
 
-          <div class="tab-column scrollable-column">
-            <Block>
-              <div class="column-header">
-                <h3 class="is-size-5">Grammar reference</h3>
+          <div class="tab-column">
+            <div class="tab-column-header">
+              <h3 class="is-size-5">Grammar reference</h3>
+              <a href="https://lark-parser.readthedocs.io/en/latest/grammar.html" target="_blank">
+                <span class="icon-text">
+                  <span>Documentation</span>
+                  <Icon>
+                    <LineAwesomeIcon name="external-link-alt" />
+                  </Icon>
+                </span>
+              </a>
+            </div>
 
-                <a href="https://lark-parser.readthedocs.io/en/latest/grammar.html" target="_blank">
-                  <span class="icon-text">
-                    <span>Documentation</span>
-                    <Icon>
-                      <LineAwesomeIcon name="external-link-alt" />
-                    </Icon>
-                  </span>
-                </a>
-              </div>
-            </Block>
+            <div class="tab-column-content">
+              <h4 class="is-size-7">Definitions</h4>
+              <table class="table is-fullwidth is-narrow">
+                <tbody>
+                  <tr>
+                    <th>Rule (non-terminal)</th>
+                    <td>
+                      <code>&lt;name&gt;: &lt;non-term-exp&gt;</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Terminal</th>
+                    <td>
+                      <code>&lt;NAME&gt;: &lt;term-exp&gt;</code>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-            <h4 class="is-size-7">Definitions</h4>
-            <table class="table is-fullwidth is-narrow">
-              <tbody>
-                <tr>
-                  <th>Rule (non-terminal)</th>
-                  <td>
-                    <code>&lt;name&gt;: &lt;non-term-exp&gt;</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Terminal</th>
-                  <td>
-                    <code>&lt;NAME&gt;: &lt;term-exp&gt;</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <h4 class="is-size-7">Terminal expressions</h4>
+              <table class="table is-fullwidth is-narrow">
+                <tbody>
+                  <tr>
+                    <th>String literal</th>
+                    <td>
+                      <code>"string"</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Case-insensitive string literal</th>
+                    <td>
+                      <code>"string"i</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Regular expression</th>
+                    <td>
+                      <code>/regular expression/</code>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-            <h4 class="is-size-7">Terminal expressions</h4>
-            <table class="table is-fullwidth is-narrow">
-              <tbody>
-                <tr>
-                  <th>String literal</th>
-                  <td>
-                    <code>"string"</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Case-insensitive string literal</th>
-                  <td>
-                    <code>"string"i</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Regular expression</th>
-                  <td>
-                    <code>/regular expression/</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <h4 class="is-size-7">Non-terminal expressions</h4>
+              <table class="table is-fullwidth is-narrow">
+                <tbody>
+                  <tr>
+                    <th>Rule reference</th>
+                    <td>
+                      <code>&lt;name&gt;</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Terminal reference</th>
+                    <td>
+                      <code>&lt;NAME&gt;</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Sequence group</th>
+                    <td>
+                      <code>(&lt;exp&gt; ...)</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Optional</th>
+                    <td>
+                      <code>[&lt;exp&gt; ...]</code>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-            <h4 class="is-size-7">Non-terminal expressions</h4>
-            <table class="table is-fullwidth is-narrow">
-              <tbody>
-                <tr>
-                  <th>Rule reference</th>
-                  <td>
-                    <code>&lt;name&gt;</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Terminal reference</th>
-                  <td>
-                    <code>&lt;NAME&gt;</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Sequence group</th>
-                  <td>
-                    <code>(&lt;exp&gt; &lt;exp&gt; ...)</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Optional</th>
-                  <td>
-                    <code>[&lt;exp&gt; &lt;exp&gt; ...]</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <h4 class="is-size-7">Quantifiers</h4>
+              <table class="table is-fullwidth is-narrow">
+                <tbody>
+                  <tr>
+                    <th>0 or 1</th>
+                    <td>
+                      <code>&lt;name | NAME&gt;?</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>0 or more</th>
+                    <td>
+                      <code>&lt;name | NAME&gt;*</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>1 or more</th>
+                    <td>
+                      <code>&lt;name | NAME&gt;+</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Exactly n</th>
+                    <td>
+                      <code>&lt;name | NAME&gt; ~ n</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Between n to m</th>
+                    <td>
+                      <code>&lt;name | NAME&gt; ~ n..m</code>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-            <h4 class="is-size-7">Quantifiers</h4>
-            <table class="table is-fullwidth is-narrow">
-              <tbody>
-                <tr>
-                  <th>0 or 1</th>
-                  <td>
-                    <code>&lt;name | NAME&gt;?</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>0 or more</th>
-                  <td>
-                    <code>&lt;name | NAME&gt;*</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>1 or more</th>
-                  <td>
-                    <code>&lt;name | NAME&gt;+</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Exactly n</th>
-                  <td>
-                    <code>&lt;name | NAME&gt; ~ n</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Between n to m</th>
-                  <td>
-                    <code>&lt;name | NAME&gt; ~ n..m</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <h4 class="is-size-7">Directives</h4>
-            <table class="table is-fullwidth is-narrow">
-              <tbody>
-                <tr>
-                  <th>Ignore a terminal when parsing</th>
-                  <td>
-                    <code>%ignore &lt;NAME&gt;</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Import a definition from another grammar</th>
-                  <td>
-                    <code>%import &lt;module&gt;.&lt;name&gt;</code><br />
-                    <code>%import &lt;module&gt;.&lt;NAME&gt;</code><br />
-                    <code>%import &lt;module&gt;.&lt;name&gt; -> &lt;name&gt;</code><br />
-                    <code>%import &lt;module&gt;.&lt;NAME&gt; -> &lt;NAME&gt;</code><br />
-                    <code>%import &lt;module&gt; (&lt;name | NAME&gt;, &lt;name | NAME&gt; ...)</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Declare a terminal without defining it</th>
-                  <td>
-                    <code>%declare &lt;NAME&gt;</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Override a definition</th>
-                  <td>
-                    <code>%override &lt;name&gt;: &lt;non-term-exp&gt;</code><br />
-                    <code>%override &lt;NAME&gt;: &lt;term-exp&gt;</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Extend a definition</th>
-                  <td>
-                    <code>%extend &lt;name&gt;: &lt;non-term-exp&gt;</code><br />
-                    <code>%extend &lt;NAME&gt;: &lt;term-exp&gt;</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <h4 class="is-size-7">Directives</h4>
+              <table class="table is-fullwidth is-narrow">
+                <tbody>
+                  <tr>
+                    <th>Ignore a terminal when parsing</th>
+                    <td>
+                      <code>%ignore &lt;NAME&gt;</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Import a definition from another grammar</th>
+                    <td>
+                      <code>%import &lt;module&gt;.&lt;name&gt;</code><br />
+                      <code>%import &lt;module&gt;.&lt;NAME&gt;</code><br />
+                      <code>%import &lt;module&gt;.&lt;name&gt; -> &lt;name&gt;</code><br />
+                      <code>%import &lt;module&gt;.&lt;NAME&gt; -> &lt;NAME&gt;</code><br />
+                      <code>%import &lt;module&gt; (&lt;name | NAME&gt;, ...)</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Declare a terminal without defining it</th>
+                    <td>
+                      <code>%declare &lt;NAME&gt;</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Override a definition</th>
+                    <td>
+                      <code>%override &lt;name&gt;: &lt;non-term-exp&gt;</code><br />
+                      <code>%override &lt;NAME&gt;: &lt;term-exp&gt;</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Extend a definition</th>
+                    <td>
+                      <code>%extend &lt;name&gt;: &lt;non-term-exp&gt;</code><br />
+                      <code>%extend &lt;NAME&gt;: &lt;term-exp&gt;</code>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -301,28 +300,26 @@
             </Block>
           </div>
 
-          <div class="tab-column scrollable-column">
-            <Block>
-              <div class="column-header">
-                <h3 class="is-size-5">Output tree</h3>
+          <div class="tab-column">
+            <div class="tab-column-header">
+              <h3 class="is-size-5">Output tree</h3>
 
-                <a href="https://lark-parser.readthedocs.io/en/latest/tree_construction.html" target="_blank">
-                  <span class="icon-text">
-                    <span>Documentation</span>
-                    <Icon>
-                      <LineAwesomeIcon name="external-link-alt" />
-                    </Icon>
-                  </span>
-                </a>
-              </div>
-            </Block>
+              <a href="https://lark-parser.readthedocs.io/en/latest/tree_construction.html" target="_blank">
+                <span class="icon-text">
+                  <span>Documentation</span>
+                  <Icon>
+                    <LineAwesomeIcon name="external-link-alt" />
+                  </Icon>
+                </span>
+              </a>
+            </div>
 
-            <Block>
+            <div class="tab-column-content">
               <TreeNode v-if="output.ast" :value="output.ast" />
               <div class="has-text-centered has-background-light has-text-grey p-6" v-else>
                 Click <span class="has-text-weight-semibold">Parse</span> to process the input with the current grammar and view the output tree.
               </div>
-            </Block>
+            </div>
           </div>
         </div>
       </div>
@@ -485,7 +482,7 @@ $green: rgb(34, 139, 34);
 $tab-height: calc(2.5rem + 1px);
 $tab-margin: 1.5rem;
 $tab-content-padding: 0.75rem;
-$tab-column-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2));
+$tab-column-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-margin} - (#{$tab-content-padding} * 2) - 30px - #{$block-spacing});
 
 // Bulma style overrides
 .is-family-monospace {
@@ -493,39 +490,40 @@ $tab-column-height: calc(100vh - #{$navbar-height} - #{$tab-height} - #{$tab-mar
 }
 
 // custom styles
-.column-header {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.scrollable-column {
-  max-height: $tab-column-height;
-  overflow: auto;
-}
-
-.tab-columns {
-  display: flex;
-  flex-direction: row;
-
-  & > .tab-column {
-    flex-basis: 0;
-    flex-grow: 1;
-    flex-shrink: 0;
-
-    &:not(:last-child) {
-      margin-right: calc(#{$block-spacing} / 2);
-    }
-
-    &:not(:first-child) {
-      margin-left: calc(#{$block-spacing} / 2);
-    }
-  }
-}
-
 .tab-content {
   padding: $tab-content-padding;
+
+  & > .tab-columns {
+    display: flex;
+    flex-direction: row;
+
+    & > .tab-column {
+      flex-basis: 0;
+      flex-grow: 1;
+      flex-shrink: 0;
+
+      &:not(:last-child) {
+        margin-right: calc(#{$block-spacing} / 2);
+      }
+
+      &:not(:first-child) {
+        margin-left: calc(#{$block-spacing} / 2);
+      }
+
+      & > .tab-column-header {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: $block-spacing;
+      }
+
+      & > .tab-column-content {
+        max-height: $tab-column-height;
+        overflow: auto;
+      }
+    }
+  }
 }
 
 .textarea {
