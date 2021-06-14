@@ -404,21 +404,33 @@ export default {
           },
           method: "POST",
         });
-        const resBody = await res.json();
+        const isSuccess = res.status >= 200 && res.status <= 299;
 
-        this.grammar.isValid = resBody.grammar.is_valid;
-        // TODO: make this a Vue filter
-        if (resBody.grammar.error) {
+        var resBody;
+        try {
+          resBody = await res.json();
+        } catch {
+          resBody = null;
+        }
+        const errorType = ((resBody || {}).error || {}).type;
+
+        this.grammar.isValid = isSuccess && errorType !== "grammar";
+        if (errorType === "grammar") {
+          // TODO: make this a Vue filter
           this.grammar.error = {
-            message: resBody.grammar.error.message.replaceAll("\n", "<br />"),
+            message: resBody.error.message.replaceAll("\n", "<br />"),
           };
         } else {
           this.grammar.error = null;
         }
 
-        this.input.isValid = resBody.input.is_valid;
-        // TODO: make this a Vue filter
-        if (resBody.input.error) {
+        this.input.isValid = isSuccess && errorType !== "parse";
+        if (errorType === "grammar") {
+          this.input.error = {
+            message: "Input could not be parsed due to a grammar error; check the Develop tab for details."
+          };
+        } else if (errorType === "parse") {
+          // TODO: make this a Vue filter
           this.input.error = {
             message: resBody.input.error.message.replaceAll("\n", "<br />"),
           };
@@ -426,8 +438,8 @@ export default {
           this.input.error = null;
         }
 
-        if (resBody.output) {
-          this.output.ast = resBody.output.ast;
+        if ((resBody || {}).result) {
+          this.output.ast = resBody.result;
         } else {
           this.output.ast = null;
         }
@@ -452,13 +464,15 @@ export default {
           },
           method: "POST",
         });
-        const resBody = await res.json();
+        const isSuccess = res.status >= 200 && res.status <= 299;
 
-        this.grammar.isValid = resBody.grammar.is_valid;
-        // TODO: make this a Vue filter
-        if (resBody.grammar.error) {
+        this.grammar.isValid = isSuccess;
+        if (!this.grammar.isValid) {
+          const resBody = await res.json();
+
+          // TODO: make this a Vue filter
           this.grammar.error = {
-            message: resBody.grammar.error.message.replaceAll("\n", "<br />"),
+            message: resBody.error.message.replaceAll("\n", "<br />"),
           };
         } else {
           this.grammar.error = null;
