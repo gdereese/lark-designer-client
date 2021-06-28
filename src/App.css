@@ -1,0 +1,11 @@
+#grammar-file-input {
+  display: none;
+}
+
+.navigation-bar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  min-height: 3rem;
+  padding: 0.75rem;
+}
