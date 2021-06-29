@@ -1,5 +1,5 @@
-#grammar-file-input {
-  display: none;
+.code-input textarea {
+  font-family: Monaco, Menlo, Consolas, "Droid Sans Mono", Inconsolata, "Courier New", monospace;
 }
 
 .navigation-bar {
@@ -8,4 +8,8 @@
   justify-content: space-between;
   min-height: 3rem;
   padding: 0.75rem;
+}
+
+#grammar-file-input {
+  display: none;
 }
