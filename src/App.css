@@ -1,15 +1,17 @@
-.code-input textarea {
-  font-family: Monaco, Menlo, Consolas, "Droid Sans Mono", Inconsolata, "Courier New", monospace;
+table.definition-table {
+  width: 100%;
 }
 
-.navigation-bar {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  min-height: 3rem;
-  padding: 0.75rem;
+table.definition-table th {
+  padding-right: 1rem;
+  text-align: start;
+  vertical-align: top;
 }
 
-#grammar-file-input {
-  display: none;
+table.definition-table td {
+  width: 60%;
+}
+
+.icon-text-left {
+  margin-right: 0.25rem;
 }
