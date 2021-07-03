@@ -14,13 +14,10 @@ import './App.css';
 
 
 function App(props) {
-  const [state, setState] = useState({
-    grammar: {
-      isRefVisible: false
-    },
-    input: {},
-    output: {}
-  });
+  const [grammarText, setGrammarText] = useState(null);
+  const [inputText, setInputText] = useState(null);
+  const [isGrammarRefVisible, setIsGrammarRefVisible] = useState(false);
+  const [outputAst, setOutputAst] = useState(null);
 
   const theme = getTheme();
 
@@ -76,15 +73,7 @@ function App(props) {
   const loadGrammar = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
-      setState(prev => {
-        return {
-          ...prev,
-          grammar: {
-            ...prev.grammar,
-            text: e.target.result
-          }
-        };
-      });
+      setGrammarText(e.target.result);
     };
     reader.readAsText(file, "UTF-8");
   };
@@ -92,42 +81,6 @@ function App(props) {
   const promptGrammarFile = () => {
     const fileInput = document.getElementById("grammar-file-input");
     fileInput.click();
-  };
-
-  const setGrammarText = (value) => {
-    setState(prev => { 
-      return { 
-        ...prev, 
-        grammar: { 
-          ...prev.grammar, 
-          text: value 
-        }
-      };
-    });
-  };
-
-  const setInputText = (value) => {
-    setState(prev => { 
-      return { 
-        ...prev, 
-        input: { 
-          ...prev.input, 
-          text: value 
-        }
-      };
-    });
-  };
-
-  const toggleGrammarRefVisibility = () => {
-    setState(prev => { 
-      return { 
-        ...prev, 
-        grammar: { 
-          ...prev.grammar, 
-          isRefVisible: !prev.grammar.isRefVisible 
-        }
-      };
-    });
   };
 
   const validateGrammar = async (text) => {
@@ -156,13 +109,13 @@ function App(props) {
   };
 
   const validateInput = async (text) => {
-    if (!state.grammar.text) {
+    if (!grammarText) {
       return null;
     }
 
     const res = await fetch('/api/parse', {
       body: JSON.stringify({
-        grammar: state.grammar.text,
+        grammar: grammarText,
         input: text || '',
       }),
       headers: {
@@ -180,15 +133,7 @@ function App(props) {
     }
     const errorType = ((resBody || {}).error || {}).type;
 
-    setState(prev => {
-      return {
-        ...prev,
-        output: {
-          ...prev.output,
-          ast: (resBody || {}).result
-        }
-      };
-    });
+    setOutputAst((resBody || {}).result);
 
     if (!isSuccess) {
       if (errorType === 'grammar') {
@@ -219,9 +164,9 @@ function App(props) {
       key: 'toggle_reference',
       text: 'Grammar reference',
       iconProps: { 
-        iconName: state.grammar.isRefVisible ? 'ClosePane' : 'OpenPane' 
+        iconName: isGrammarRefVisible ? 'ClosePane' : 'OpenPane' 
       },
-      onClick: () => toggleGrammarRefVisibility()
+      onClick: () => setIsGrammarRefVisible(!isGrammarRefVisible)
     }
   ];
 
@@ -287,11 +232,11 @@ function App(props) {
                   onChange={(e) => setGrammarText(e.target.value)}
                   onGetErrorMessage={(v) => validateGrammar(v)}
                   styles={styles.textField}
-                  value={state.grammar.text} 
+                  value={grammarText} 
                 />
               </Stack.Item>
 
-              { state.grammar.isRefVisible ? 
+              { isGrammarRefVisible ? 
                 <Stack.Item 
                   disableShrink="true" 
                   grow="1"
@@ -476,7 +421,7 @@ function App(props) {
                   onChange={(e) => setInputText(e.target.value)}
                   onGetErrorMessage={(v) => validateInput(v)}
                   styles={styles.textField}
-                  value={state.input.text} 
+                  value={inputText}
                 />
               </Stack.Item>
 
@@ -485,7 +430,6 @@ function App(props) {
                 grow="1"
                 styles={styles.columnStackItem}
               >
-                
               </Stack.Item>
             </Stack>
           </PivotItem>
