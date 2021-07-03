@@ -1,15 +1,11 @@
 import { CommandBar } from '@fluentui/react';
 import { FontIcon } from '@fluentui/react';
 import { getTheme } from '@fluentui/react';
-import { DefaultButton } from '@fluentui/react';
-import { IconButton } from '@fluentui/react';
 import { Link } from '@fluentui/react';
 import { Pivot } from '@fluentui/react';
 import { PivotItem } from '@fluentui/react';
 import React from 'react';
-import { ScrollablePane } from '@fluentui/react';
 import { Stack } from '@fluentui/react';
-import { Sticky } from '@fluentui/react';
 import { Text } from '@fluentui/react';
 import { TextField } from '@fluentui/react';
 import { useState } from 'react';
@@ -21,7 +17,9 @@ function App(props) {
   const [state, setState] = useState({
     grammar: {
       isRefVisible: false
-    }
+    },
+    input: {},
+    output: {}
   });
 
   const theme = getTheme();
@@ -43,12 +41,23 @@ function App(props) {
         flexBasis: 0
       }
     },
-    grammarStack: {
+    navigationBarStack: {
+      root: {
+        backgroundColor: theme.palette.themePrimary,
+        padding: '1rem',
+        selectors: {
+          'span': {
+            color: theme.palette.white
+          }
+        }
+      }
+    },
+    tabContentStack: {
       root: {
         height: '50vh'
       }
     },
-    grammarTextField: {
+    textField: {
       root: {
         height: '100%'
       },
@@ -61,18 +70,7 @@ function App(props) {
       wrapper: {
         height: 'inherit'
       }
-    },
-    navigationBarStack: {
-      root: {
-        backgroundColor: theme.palette.themePrimary,
-        padding: '1rem',
-        selectors: {
-          'span': {
-            color: theme.palette.white
-          }
-        }
-      }
-    },
+    }
   };
 
   const loadGrammar = (file) => {
@@ -94,7 +92,31 @@ function App(props) {
   const promptGrammarFile = () => {
     const fileInput = document.getElementById("grammar-file-input");
     fileInput.click();
-  }
+  };
+
+  const setGrammarText = (value) => {
+    setState(prev => { 
+      return { 
+        ...prev, 
+        grammar: { 
+          ...prev.grammar, 
+          text: value 
+        }
+      };
+    });
+  };
+
+  const setInputText = (value) => {
+    setState(prev => { 
+      return { 
+        ...prev, 
+        input: { 
+          ...prev.input, 
+          text: value 
+        }
+      };
+    });
+  };
 
   const toggleGrammarRefVisibility = () => {
     setState(prev => { 
@@ -106,21 +128,21 @@ function App(props) {
         }
       };
     });
-  }
+  };
 
   const validateGrammar = async (text) => {
     if (!text) {
       return null;
     }
 
-    const res = await fetch("api/validate", {
+    const res = await fetch('api/validate', {
       body: JSON.stringify({
         grammar: text,
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      method: "POST",
+      method: 'POST',
     });
     const isSuccess = res.status >= 200 && res.status <= 299;
 
@@ -128,6 +150,56 @@ function App(props) {
       const resBody = await res.json();
 
       return resBody.error.message;
+    } else {
+      return null;
+    }
+  };
+
+  const validateInput = async (text) => {
+    if (!state.grammar.text) {
+      return null;
+    }
+
+    const res = await fetch('/api/parse', {
+      body: JSON.stringify({
+        grammar: state.grammar.text,
+        input: text || '',
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+    const isSuccess = res.status >= 200 && res.status <= 299;
+
+    var resBody;
+    try {
+      resBody = await res.json();
+    } catch {
+      resBody = null;
+    }
+    const errorType = ((resBody || {}).error || {}).type;
+
+    setState(prev => {
+      return {
+        ...prev,
+        output: {
+          ...prev.output,
+          ast: (resBody || {}).result
+        }
+      };
+    });
+
+    if (!isSuccess) {
+      if (errorType === 'grammar') {
+        return 'Input could not be parsed due to a grammar error; check the Grammar tab for details.';
+      } else if (errorType === 'parse') {
+        return resBody.error.message;
+      } else if (errorType) {
+        return `Unrecognized error type ${errorType}: ${resBody.error.message}`;
+      } else {
+        return 'The server encountered an unexpected error.';
+      }
     } else {
       return null;
     }
@@ -151,14 +223,14 @@ function App(props) {
       },
       onClick: () => toggleGrammarRefVisibility()
     }
-  ]
-
-  const _grammarStackTokens = {
-    childrenGap: theme.spacing.m
-  }
+  ];
 
   const _navigationBarTokens = {
     padding: '1rem'
+  };
+  
+  const _tabContentStackTokens = {
+    childrenGap: theme.spacing.m
   };
 
   return (
@@ -194,8 +266,8 @@ function App(props) {
             <Stack 
               horizontal 
               horizontalAlign="space-between"
-              styles={styles.grammarStack}
-              tokens={_grammarStackTokens}
+              styles={styles.tabContentStack}
+              tokens={_tabContentStackTokens}
             >
               <Stack.Item 
                 disableShrink="true" 
@@ -212,9 +284,9 @@ function App(props) {
 
                 <TextField 
                   multiline 
-                  onChange={(e) => setState(prev => { return { ...prev, grammar: { ...prev.grammar, text: e.target.value }};})}
+                  onChange={(e) => setGrammarText(e.target.value)}
                   onGetErrorMessage={(v) => validateGrammar(v)}
-                  styles={styles.grammarTextField}
+                  styles={styles.textField}
                   value={state.grammar.text} 
                 />
               </Stack.Item>
@@ -388,6 +460,34 @@ function App(props) {
           </PivotItem>
 
           <PivotItem headerText="Test">
+            <Stack 
+              horizontal 
+              horizontalAlign="space-between"
+              styles={styles.tabContentStack}
+              tokens={_tabContentStackTokens}
+            >
+              <Stack.Item 
+                disableShrink="true" 
+                grow="1.5"
+                styles={styles.columnStackItem}
+              >
+                <TextField 
+                  multiline 
+                  onChange={(e) => setInputText(e.target.value)}
+                  onGetErrorMessage={(v) => validateInput(v)}
+                  styles={styles.textField}
+                  value={state.input.text} 
+                />
+              </Stack.Item>
+
+              <Stack.Item 
+                disableShrink="true" 
+                grow="1"
+                styles={styles.columnStackItem}
+              >
+                
+              </Stack.Item>
+            </Stack>
           </PivotItem>
         </Pivot>
       </div>
