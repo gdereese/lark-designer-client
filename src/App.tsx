@@ -1,31 +1,34 @@
-import { CommandBar } from '@fluentui/react';
-import { FontIcon } from '@fluentui/react';
-import { getTheme } from '@fluentui/react';
-import { Link } from '@fluentui/react';
-import { Pivot } from '@fluentui/react';
-import { PivotItem } from '@fluentui/react';
-import React from 'react';
-import { Stack } from '@fluentui/react';
-import { Text } from '@fluentui/react';
-import { TextField } from '@fluentui/react';
-import { useState } from 'react';
+import { CommandBar } from '@fluentui/react'
+import { createRef } from 'react'
+import { FontIcon } from '@fluentui/react'
+import { getTheme } from '@fluentui/react'
+import { Link } from '@fluentui/react'
+import { Pivot } from '@fluentui/react'
+import { PivotItem } from '@fluentui/react'
+import React from 'react'
+import { Stack } from '@fluentui/react'
+import { Text } from '@fluentui/react'
+import { TextField } from '@fluentui/react'
+import { useState } from 'react'
 
-import './App.css';
+import './App.css'
 
 
-function App(props) {
-  const [grammarText, setGrammarText] = useState(null);
-  const [inputText, setInputText] = useState(null);
-  const [isGrammarRefVisible, setIsGrammarRefVisible] = useState(false);
-  const [outputAst, setOutputAst] = useState(null);
+function App(props: { version: any }) {
+  const [grammarText, setGrammarText] = useState(null)
+  const [inputText, setInputText] = useState(null)
+  const [isGrammarRefVisible, setIsGrammarRefVisible] = useState(false)
+  const [outputAst, setOutputAst] = useState(null)
 
-  const theme = getTheme();
+  const grammarFileInputRef = createRef()
+
+  const theme = getTheme()
 
   const css = {
     appContent: {
       padding: theme.spacing.m
     }
-  };
+  }
 
   const styles = {
     appPivot: {
@@ -68,24 +71,23 @@ function App(props) {
         height: 'inherit'
       }
     }
-  };
+  }
 
-  const loadGrammar = (file) => {
-    const reader = new FileReader();
+  const loadGrammar = (file: File) => {
+    const reader = new FileReader()
     reader.onload = (e) => {
-      setGrammarText(e.target.result);
-    };
-    reader.readAsText(file, "UTF-8");
-  };
+      setGrammarText(e.target.result)
+    }
+    reader.readAsText(file, "UTF-8")
+  }
 
   const promptGrammarFile = () => {
-    const fileInput = document.getElementById("grammar-file-input");
-    fileInput.click();
-  };
+    grammarFileInputRef.current.click()
+  }
 
-  const validateGrammar = async (text) => {
+  const validateGrammar = async (text: string) => {
     if (!text) {
-      return null;
+      return null
     }
 
     const res = await fetch('api/validate', {
@@ -96,21 +98,21 @@ function App(props) {
         'Content-Type': 'application/json',
       },
       method: 'POST',
-    });
-    const isSuccess = res.status >= 200 && res.status <= 299;
+    })
+    const isSuccess = res.status >= 200 && res.status <= 299
 
     if (!isSuccess) {
-      const resBody = await res.json();
+      const resBody = await res.json()
 
-      return resBody.error.message;
+      return resBody.error.message
     } else {
-      return null;
+      return null
     }
-  };
+  }
 
-  const validateInput = async (text) => {
+  const validateInput = async (text: string) => {
     if (!grammarText) {
-      return null;
+      return null
     }
 
     const res = await fetch('/api/parse', {
@@ -122,33 +124,33 @@ function App(props) {
         'Content-Type': 'application/json',
       },
       method: 'POST',
-    });
-    const isSuccess = res.status >= 200 && res.status <= 299;
+    })
+    const isSuccess = res.status >= 200 && res.status <= 299
 
-    var resBody;
+    var resBody
     try {
-      resBody = await res.json();
+      resBody = await res.json()
     } catch {
-      resBody = null;
+      resBody = null
     }
-    const errorType = ((resBody || {}).error || {}).type;
+    const errorType = ((resBody || {}).error || {}).type
 
-    setOutputAst((resBody || {}).result);
+    setOutputAst((resBody || {}).result)
 
     if (!isSuccess) {
       if (errorType === 'grammar') {
-        return 'Input could not be parsed due to a grammar error; check the Grammar tab for details.';
+        return 'Input could not be parsed due to a grammar error check the Grammar tab for details.'
       } else if (errorType === 'parse') {
-        return resBody.error.message;
+        return resBody.error.message
       } else if (errorType) {
-        return `Unrecognized error type ${errorType}: ${resBody.error.message}`;
+        return `Unrecognized error type ${errorType}: ${resBody.error.message}`
       } else {
-        return 'The server encountered an unexpected error.';
+        return 'The server encountered an unexpected error.'
       }
     } else {
-      return null;
+      return null
     }
-  };
+  }
 
   const _developCommandItems = [
     {
@@ -157,7 +159,7 @@ function App(props) {
       iconProps: { iconName: 'Upload' },
       onClick: () => promptGrammarFile()
     },
-  ];  
+  ]  
 
   const _developCommandFarItems = [
     {
@@ -168,15 +170,15 @@ function App(props) {
       },
       onClick: () => setIsGrammarRefVisible(!isGrammarRefVisible)
     }
-  ];
+  ]
 
   const _navigationBarTokens = {
     padding: '1rem'
-  };
+  }
   
   const _tabContentStackTokens = {
     childrenGap: theme.spacing.m
-  };
+  }
 
   return (
     <div>
@@ -204,8 +206,8 @@ function App(props) {
         <Pivot styles={styles.appPivot}>
           <PivotItem headerText="Grammar">
             <CommandBar 
-              items={_developCommandItems} 
               farItems={_developCommandFarItems} 
+              items={_developCommandItems} 
             />
 
             <Stack 
@@ -215,16 +217,17 @@ function App(props) {
               tokens={_tabContentStackTokens}
             >
               <Stack.Item 
-                disableShrink="true" 
-                grow="1.5"
+                disableShrink={true}
+                grow={1.5}
                 styles={styles.columnStackItem}
               >
                 <input
-                  id="grammar-file-input"
-                  type="file"
                   accept=".lark"
+                  id="grammar-file-input"
                   onChange={(e) => loadGrammar(e.target.files[0])}
+                  ref={grammarFileInputRef}
                   style={{ display: 'none' }}
+                  type="file"
                 />
 
                 <TextField 
@@ -238,8 +241,8 @@ function App(props) {
 
               { isGrammarRefVisible ? 
                 <Stack.Item 
-                  disableShrink="true" 
-                  grow="1"
+                  disableShrink={true}
+                  grow={1}
                   styles={styles.columnStackItem}
                 >
                   <h2>Grammar reference</h2>
@@ -371,8 +374,8 @@ function App(props) {
                         <td>
                           <code>%import &lt;module&gt;.&lt;name&gt;</code><br />
                           <code>%import &lt;module&gt;.&lt;NAME&gt;</code><br />
-                          <code>%import &lt;module&gt;.&lt;name&gt; -> &lt;name&gt;</code><br />
-                          <code>%import &lt;module&gt;.&lt;NAME&gt; -> &lt;NAME&gt;</code><br />
+                          <code>%import &lt;module&gt;.&lt;name&gt; -&gt; &lt;name&gt;</code><br />
+                          <code>%import &lt;module&gt;.&lt;NAME&gt; -&gt; &lt;NAME&gt;</code><br />
                           <code>%import &lt;module&gt; (&lt;name | NAME&gt;, ...)</code>
                         </td>
                       </tr>
@@ -412,8 +415,8 @@ function App(props) {
               tokens={_tabContentStackTokens}
             >
               <Stack.Item 
-                disableShrink="true" 
-                grow="1.5"
+                disableShrink={true}
+                grow={1.5}
                 styles={styles.columnStackItem}
               >
                 <TextField 
@@ -426,8 +429,8 @@ function App(props) {
               </Stack.Item>
 
               <Stack.Item 
-                disableShrink="true" 
-                grow="1"
+                disableShrink={true}
+                grow={1}
                 styles={styles.columnStackItem}
               >
               </Stack.Item>
@@ -436,7 +439,7 @@ function App(props) {
         </Pivot>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
