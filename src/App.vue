@@ -432,7 +432,7 @@ export default {
         } else if (errorType === "parse") {
           // TODO: make this a Vue filter
           this.input.error = {
-            message: resBody.input.error.message.replaceAll("\n", "<br />"),
+            message: resBody.error.message.replaceAll("\n", "<br />"),
           };
         } else {
           this.input.error = null;
