@@ -41,6 +41,8 @@
               <textarea
                 class="textarea is-family-monospace"
                 placeholder="enter Lark grammar"
+                :debounce-events="'input'"
+                v-debounce="validate"
                 v-model="grammar.text"
               ></textarea>
             </Block>
@@ -54,14 +56,10 @@
                   @change="loadGrammar"
                 />
                 <Button @click="promptGrammarFile">Load…</Button>
-                <Button
-                  :is-disabled="!canValidate || grammar.isValidating"
-                  :is-loading="grammar.isValidating"
-                  @click="validate"
-                >
-                  Validate
-                </Button>
                 <div class="mr-2 mb-2">
+                  <span class="icon-text m-2" v-if="grammar.isValidating">
+                    <span>Validating...</span>
+                  </span>
                   <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
                     <Icon>
                       <LineAwesomeIcon name="check" />
@@ -262,20 +260,19 @@
               <textarea
                 class="textarea is-family-monospace"
                 placeholder="enter test input"
-                v-model.lazy="input.text"
+                :debounce-events="'input'"
+                v-debounce="parseInput"
+                v-model="input.text"
               ></textarea>
             </Block>
 
             <Block>
               <Buttons>
-                <Button
-                  :is-disabled="!canParse || grammar.isParsing"
-                  :is-loading="input.isParsing"
-                  @click="parseInput"
-                  >Parse</Button
-                >
                 <div class="mr-2 mb-2">
-                  <span class="icon-text has-text-success m-2" v-if="input.isValid">
+                  <span class="m2" v-if="input.isParsing">
+                    <span>Parsing...</span>
+                  </span>
+                  <span class="icon-text has-text-success m-2" v-else-if="input.isValid">
                     <Icon>
                       <LineAwesomeIcon name="check" />
                     </Icon>
@@ -387,10 +384,15 @@ export default {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.grammar.text = e.target.result;
+        this.validate();
       };
       reader.readAsText(file, "UTF-8");
     },
     async parseInput() {
+      if (!this.canParse || this.grammar.isParsing) {
+        return;
+      }
+
       try {
         this.input.isParsing = true;
 
@@ -452,6 +454,10 @@ export default {
       fileInput.click();
     },
     async validate() {
+      if (!this.canValidate || this.grammar.isValidating) {
+        return;
+      }
+
       try {
         this.grammar.isValidating = true;
 
