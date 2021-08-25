@@ -269,7 +269,7 @@
             <Block>
               <Buttons>
                 <div class="mr-2 mb-2">
-                  <span class="m2" v-if="input.isParsing">
+                  <span class="m-2" v-if="input.isParsing">
                     <span>Parsing...</span>
                   </span>
                   <span class="icon-text has-text-success m-2" v-else-if="input.isValid">
