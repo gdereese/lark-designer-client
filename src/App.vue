@@ -60,7 +60,7 @@
                   <span class="icon-text m-2" v-if="grammar.isValidating">
                     <span>Validating...</span>
                   </span>
-                  <span class="icon-text has-text-success m-2" v-if="grammar.isValid">
+                  <span class="icon-text has-text-success m-2" v-else-if="grammar.isValid">
                     <Icon>
                       <LineAwesomeIcon name="check" />
                     </Icon>
